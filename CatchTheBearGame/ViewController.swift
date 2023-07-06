@@ -13,6 +13,9 @@ class ViewController: UIViewController {
     var score = 0
     var timer = Timer()
     var counter = 0
+    var bearArray = [UIImageView] ()
+    var hideTimer = Timer()
+    
     
     //Views
     @IBOutlet weak var timeLabel: UILabel!
@@ -68,12 +71,26 @@ class ViewController: UIViewController {
         bear8.addGestureRecognizer(recognizer8)
         bear9.addGestureRecognizer(recognizer9)
         
+        bearArray = [bear1, bear2, bear3, bear4, bear5, bear6, bear7, bear8, bear9]
+        
         //Timers
         counter = 10
         timeLabel.text = String(counter)
         
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
+        hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(hideBear), userInfo: nil, repeats: true)
         
+        hideBear()
+        
+    }
+    
+    @objc func hideBear() {
+        for bear in bearArray {
+            bear.isHidden = true
+        }
+        
+        let random = Int(arc4random_uniform(UInt32(bearArray.count - 1)))
+        bearArray[random].isHidden = false
     }
     
     @objc func increaseScore() {
@@ -87,6 +104,11 @@ class ViewController: UIViewController {
         
         if counter == 0 {
             timer.invalidate()
+            hideTimer.invalidate()
+            
+            for bear in bearArray {
+                bear.isHidden = true
+            }
             
             //Alert
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)
