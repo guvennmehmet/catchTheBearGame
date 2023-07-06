@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var counter = 0
     var bearArray = [UIImageView] ()
     var hideTimer = Timer()
+    var highScore = 0
     
     
     //Views
@@ -37,6 +38,19 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         scoreLabel.text = "Score: \(score)"
+        
+        //Highscore check
+        let storedHighScore = UserDefaults.standard.object(forKey: "highscore")
+        
+        if storedHighScore == nil {
+            highScore = 0
+            highScoreLabel.text = "Highscore: \(highScore)"
+        }
+        
+        if let newScore = storedHighScore as? Int {
+            highScore = newScore
+            highScoreLabel.text = "Highscore: \(highScore)"
+        }
         
         //Images
         bear1.isUserInteractionEnabled = true
@@ -109,6 +123,14 @@ class ViewController: UIViewController {
             for bear in bearArray {
                 bear.isHidden = true
             }
+            
+            //HighScore
+            if self.score > self.highScore {
+                self.highScore = self.score
+                highScoreLabel.text = "Highscore: \(self.highScore)"
+                UserDefaults.standard.set(self.highScore, forKey: "highScore")
+            }
+            
             
             //Alert
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)
